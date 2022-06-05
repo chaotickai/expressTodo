@@ -1,24 +1,54 @@
+// App modules
 const express = require(`express`)
 const bodyParser = require(`body-parser`)
 const cors = require(`cors`)
+
+// Dev Modules
 const logger = require(`morgan`)
 const chalk = require(`chalk`)
 
+//Starts our express instance
 const app = express()
+
+// Host sets port, otherwise default to 3000
 const port = process.env.PORT || 3000
 
-app.use(cors())
+// Starts morgan in dev mode, useful for seeing http request while developing
 app.use(logger(`dev`))
 
-// parse application/x-www-form-urlencoded
+// Gets around high API security
+app.use(cors())
+
+// Parses any urlencoded data we recieve
 app.use(bodyParser.urlencoded({ extended: false }));
-// parse application/json
+// Parses any json we recieve
 app.use(bodyParser.json());
 
-app.get(`/`, (req, res) => {
-    res.send(`I'm alive`)
-})
+// Serves the static files in our "client" folder
+app.use(express.static('../client'))
 
+// Sets a starting todo object
+// Empty the array to make the list start blank
+var todoList = [
+    {
+        // For separating the different todos, each should be unique
+        id: 1,
+        // What users will actually see on their todo list
+        content: `Make a todo list`,
+        // Mainly used for styling
+        isComplete: false
+    }
+]
+
+// Route handler for requests to /todo
+app.route(`/todo`)
+    // Handler for GETs on the /todo path (Shows our data to whos asking for it)
+    .get((req, res) => {
+        // Sends our todos back as a JSON object (Since we're passing objects anyway we could use res.send, but better safe than sorry)
+        res.json(todoList)
+    })
+
+// Binds server with specified port to listen for any connections (Basically makes the server work)
 app.listen(port, () => {
-    console.log(`App listening on port ${chalk.cyanBright(port)}!`)
+    console.log(`App listening on port ${chalk.magenta.underline(port)}!`)
 })
