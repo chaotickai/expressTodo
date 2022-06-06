@@ -29,7 +29,7 @@ app.use(express.static('../client'))
 
 // Sets a starting todo object
 // Empty the array to make the list start blank
-var todoList = [
+let todoList = [
     {
         // For separating the different todos, each should be unique
         id: 1,
@@ -40,12 +40,35 @@ var todoList = [
     }
 ]
 
+let idNum = 2
+
 // Route handler for requests to /todo
 app.route(`/todo`)
     // Handler for GETs on the /todo path (Shows our data to whos asking for it)
+    // The R in CRUD (Read)
     .get((req, res) => {
         // Sends our todos back as a JSON object (Since we're passing objects anyway we could use res.send, but better safe than sorry)
         res.json(todoList)
+    })
+
+    // Handler for POSTs on the /todo path
+    // The C in CRUD (Create)
+    .post((req, res) => {
+        // Takes the data we're given from the post and puts it into our todo object format
+        let recievedTodo = {
+            id: idNum,
+            content: req.body.content,
+            isComplete: false
+        }
+
+        // Increments our idNum for every new todo to keep their ids unique
+        idNum++
+
+        // Adds our new todo to todoList, our server side list of todos
+        todoList.push(recievedTodo)
+
+        // Sends back our full todo back to the client as a JSON object
+        res.json(recievedTodo)
     })
 
 // Binds server with specified port to listen for any connections (Basically makes the server work)
