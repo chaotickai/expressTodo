@@ -17,7 +17,7 @@ $(`#todoEntry`).on(`keypress`, function(event) {
             method: "POST",
             data: todoText
         })
-        // If our post is successful we recieve the full todo object and turn that into a list item to be added to our users todo list
+        // If our POST is successful we recieve the full todo object and turn that into a list item to be added to our users todo list
         .done((data) => {
             $(`#todosList`).append(
                 `<li data-id=${data.id}>${data.content}</li>`
@@ -63,5 +63,32 @@ $(() => {
         console.error(`GET error ${error}`)
 
         alert(`Sorry, we coulnd't retrieve your todo list`)
+    })
+})
+
+// This will run our anon function if a list item that is the child of an unordered list is clicked
+// The U in CRUD (Update)
+$("ul").on('click', `li` , function(){
+    // Binds "this", our list item in this case, to a variable for use in the rest of the function
+    let todo = this
+
+    // Grabs the id from our list item
+    let todoId = $(todo).data('id')
+
+    // Runs an ajax function with the PUT method
+    $.ajax({
+        url: `${appURL}/${todoId}`,
+        method: "PUT"
+    })
+    // If our PUT is successful we toggle the completed class to reflect the change on the server side list
+    .done((data) => {
+        $(todo).toggleClass(`completed`)
+    })
+
+    // Runs a function if our PUT fails and reports the error type
+    .fail((error) => {
+        console.error(`PUT error ${error}`)
+
+        alert(`Sorry, we coulnd't mark your todo as completed`)
     })
 })

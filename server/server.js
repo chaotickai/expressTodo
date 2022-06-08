@@ -71,6 +71,21 @@ app.route(`/todo`)
         res.json(recievedTodo)
     })
 
+// Route handler for requests to /todo/:id
+app.route(`/todo/:id`)
+    // Handler for PUTs on the /todo/:id path
+    // The U in CRUD (Update)
+    .put((req, res) => {
+        // Uses the id we're passed to find our todo in the server side array
+        let selectedTodo = todoList.find(todo => todo.id == req.params.id)
+
+        // The actual update happens here, flipping the isComplete boolean
+        selectedTodo.isComplete = !selectedTodo.isComplete
+
+        // Sends a response back to the client just to tell it everything was successful
+        res.json(selectedTodo)
+    })
+
 // Binds server with specified port to listen for any connections (Basically makes the server work)
 app.listen(port, () => {
     console.log(`App listening on port ${chalk.magenta.underline(port)}!`)
