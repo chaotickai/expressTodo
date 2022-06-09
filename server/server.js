@@ -86,6 +86,19 @@ app.route(`/todo/:id`)
         res.json(selectedTodo)
     })
 
+    // Handler for DELETEs on the /todo/:id path
+    // The D in CRUD (Delete)
+    .delete((req, res) => {
+        // Uses the id we're passed to find the index our todo in the server side array
+        let selectedTodoIndex = todoList.findIndex(todo => todo.id == req.params.id)
+
+        // Deletes the todo from our server side list
+        todoList.splice(selectedTodoIndex, 1)
+
+        // Sends a response back to the client just to tell it everything was successful
+        res.send(todoList)
+    })
+
 // Binds server with specified port to listen for any connections (Basically makes the server work)
 app.listen(port, () => {
     console.log(`App listening on port ${chalk.magenta.underline(port)}!`)
